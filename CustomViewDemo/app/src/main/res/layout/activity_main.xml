@@ -15,4 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="轮式菜单"/>
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/carousel"
+        android:text="图片轮播"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

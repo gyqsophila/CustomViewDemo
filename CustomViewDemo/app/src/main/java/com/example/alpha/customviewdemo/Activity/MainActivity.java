@@ -3,9 +3,9 @@ package com.example.alpha.customviewdemo.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 
-import com.example.alpha.customviewdemo.Activity.WheeledMenuActivity;
 import com.example.alpha.customviewdemo.R;
 
 import butterknife.BindView;
@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.wheelDemo)
     Button wheelDemo;
+    @BindView(R.id.carousel)
+    Button carousel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +26,19 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.wheelDemo)
-    public void onClick() {
-        Intent intent=new Intent(this,WheeledMenuActivity.class);
-        startActivity(intent);
+
+    @OnClick({R.id.wheelDemo, R.id.carousel})
+    public void onClick(View view) {
+        Intent intent=new Intent();
+        switch (view.getId()) {
+            case R.id.wheelDemo:
+                intent.setClass(this,WheeledMenuActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.carousel:
+                intent.setClass(this,CarouselActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
