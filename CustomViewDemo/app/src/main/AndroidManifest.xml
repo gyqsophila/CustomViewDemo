@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".Activity.WheeledMenuActivity"/>
         <activity android:name=".Activity.CarouselActivity"/>
+        <activity android:name=".Activity.PopupWindowActivity"/>
     </application>
 
 </manifest>

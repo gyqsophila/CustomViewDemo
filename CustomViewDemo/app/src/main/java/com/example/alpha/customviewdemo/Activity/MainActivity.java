@@ -1,6 +1,8 @@
 package com.example.alpha.customviewdemo.Activity;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     Button wheelDemo;
     @BindView(R.id.carousel)
     Button carousel;
+    @BindView(R.id.popup_window)
+    Button popup_window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.wheelDemo, R.id.carousel})
+    @OnClick({R.id.wheelDemo, R.id.carousel,R.id.popup_window})
     public void onClick(View view) {
         Intent intent=new Intent();
         switch (view.getId()) {
@@ -37,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.carousel:
                 intent.setClass(this,CarouselActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.popup_window:
+                intent.setClass(this,PopupWindowActivity.class);
                 startActivity(intent);
                 break;
         }

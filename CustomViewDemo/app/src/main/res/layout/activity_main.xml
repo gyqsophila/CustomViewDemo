@@ -21,4 +21,10 @@
         android:text="图片轮播"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/popup_window"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="弹出选择框"/>
 </LinearLayout>
