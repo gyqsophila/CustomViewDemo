@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     Button carousel;
     @BindView(R.id.popup_window)
     Button popup_window;
+    @BindView(R.id.toggle_button)
+    Button toggle_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +33,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.wheelDemo, R.id.carousel,R.id.popup_window})
+    @OnClick({R.id.wheelDemo, R.id.carousel,R.id.popup_window,R.id.toggle_button})
     public void onClick(View view) {
         Intent intent=new Intent();
         switch (view.getId()) {
             case R.id.wheelDemo:
                 intent.setClass(this,WheeledMenuActivity.class);
-                startActivity(intent);
                 break;
             case R.id.carousel:
                 intent.setClass(this,CarouselActivity.class);
-                startActivity(intent);
                 break;
             case R.id.popup_window:
                 intent.setClass(this,PopupWindowActivity.class);
-                startActivity(intent);
+                break;
+            case R.id.toggle_button:
+                intent.setClass(this,ToggleActivity.class);
                 break;
         }
+        startActivity(intent);
     }
 }

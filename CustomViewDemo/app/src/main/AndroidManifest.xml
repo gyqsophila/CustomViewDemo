@@ -18,6 +18,7 @@
         <activity android:name=".Activity.WheeledMenuActivity"/>
         <activity android:name=".Activity.CarouselActivity"/>
         <activity android:name=".Activity.PopupWindowActivity"/>
+        <activity android:name=".Activity.ToggleActivity"/>
     </application>
 
 </manifest>

@@ -12,3 +12,7 @@ Some custom view demos,like wheeled menu,carousel images.
 ## Dropdown Popup Window
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/popupwindow.gif)
+
+## Toggle Button
+
+![](http://oa3wvfmvl.bkt.clouddn.com/toggle.gif)

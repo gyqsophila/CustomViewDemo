@@ -27,4 +27,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="弹出选择框"/>
+    <Button
+        android:id="@+id/toggle_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="自定义开关"/>
 </LinearLayout>
