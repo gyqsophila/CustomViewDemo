@@ -19,6 +19,7 @@
         <activity android:name=".Activity.CarouselActivity"/>
         <activity android:name=".Activity.PopupWindowActivity"/>
         <activity android:name=".Activity.ToggleActivity"/>
+        <activity android:name=".Activity.RefeathActivity"/>
     </application>
 
 </manifest>

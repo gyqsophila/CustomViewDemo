@@ -33,4 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="自定义开关"/>
+    <Button
+        android:id="@+id/refeash_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="下拉刷新"/>
+
 </LinearLayout>

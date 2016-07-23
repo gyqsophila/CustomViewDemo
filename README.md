@@ -16,3 +16,7 @@ Some custom view demos,like wheeled menu,carousel images.
 ## Toggle Button
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/toggle.gif)
+
+## Pull to Refeash
+
+![](http://oa3wvfmvl.bkt.clouddn.com/pulltorefeash.gif)

@@ -46,6 +46,7 @@ public class CarouselActivity extends AppCompatActivity implements ViewPager.OnP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carousel);
         ButterKnife.bind(this);
+        viewPager.setOffscreenPageLimit(1);//设置左右缓存页面的个数
         viewPager.addOnPageChangeListener(this);
         initData();
         initAdapter();
@@ -122,6 +123,7 @@ public class CarouselActivity extends AppCompatActivity implements ViewPager.OnP
         int newpos=position%imageViewList.size();
         tvDesc.setText(Descriptions[newpos]);
 
+        //控制小白点的明暗变化
         llPointContainer.getChildAt(previousSelectedPotion).setEnabled(false);
         llPointContainer.getChildAt(newpos).setEnabled(true);
 
