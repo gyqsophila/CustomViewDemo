@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.MainActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,6 +21,7 @@
         <activity android:name=".Activity.PopupWindowActivity"/>
         <activity android:name=".Activity.ToggleActivity"/>
         <activity android:name=".Activity.RefeathActivity"/>
+        <activity android:name=".Activity.SlideMenuAvtiviy"/>
     </application>
 
 </manifest>

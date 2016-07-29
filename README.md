@@ -20,3 +20,7 @@ Some custom view demos,like wheeled menu,carousel images.
 ## Pull to Refeash
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/pulltorefeash.gif)
+
+## SlideMenu
+
+![](http://oa3wvfmvl.bkt.clouddn.com/SlideMenu.gif)

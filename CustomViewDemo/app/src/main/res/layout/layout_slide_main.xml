@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.example.alpha.customviewdemo.UI.SlideMenu
+        android:id="@+id/slideMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/activity_left_menu"/>
+        <include layout="@layout/activity_main_content"/>
+    </com.example.alpha.customviewdemo.UI.SlideMenu>
+</RelativeLayout>

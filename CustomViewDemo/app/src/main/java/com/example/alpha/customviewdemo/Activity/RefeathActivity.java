@@ -58,10 +58,6 @@ public class RefeathActivity extends AppCompatActivity {
                 }.start();
             }
 
-            @Override
-            public void onLoadMore() {
-
-            }
         });
         Datalist=new ArrayList<>();
         for (int i=0;i<30;i++){

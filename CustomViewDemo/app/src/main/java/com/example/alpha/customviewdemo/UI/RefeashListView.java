@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,12 +15,13 @@ import android.widget.TextView;
 import com.example.alpha.customviewdemo.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * 拉动刷新view
  * Created by Alpha on 2016/7/23.
  */
-public class RefeashListView extends ListView implements AbsListView.OnScrollListener {
+public class RefeashListView extends ListView {
     /**
      * 下拉刷新状态
      */
@@ -61,14 +61,10 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
      */
     private float downY;
     /**
-     * 移动到新位置的纵坐标
+     * 刷新状态变化监听接口实例化
      */
-    private float moveY;
     private onRefreshListener mListener;
-    /**
-     * 是否为上拉加载更多状态
-     */
-    private boolean isLoadMore=false;
+
 
     public RefeashListView(Context context) {
         super(context);
@@ -91,8 +87,7 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
     private void initial() {
         initHeaderView();
         initAnimation();
-        initFooterView();
-        setOnScrollListener(this);
+        //initFooterView();
     }
 
     /**
@@ -133,16 +128,9 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
     }
 
     /**
-     * 初始化尾布局
-     */
-    private void initFooterView() {
-        // TODO: 2016/7/23
-    }
-
-    /**
      * 监听触摸动作更新UI和状态
-     * @param ev
-     * @return
+     * @param ev 触摸动作
+     * @return 是否消费触摸事件
      */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -151,12 +139,13 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
                 downY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                moveY = ev.getY();
+                //移动到新位置的纵坐标
+                float moveY = ev.getY();
                 if (currentState ==REFEASHING){
                     return super.onTouchEvent(ev);
                 }
 
-                float offset=moveY-downY;//移动偏移量
+                float offset= moveY -downY;//移动偏移量
                 //若果偏移量为正并且顶部item为第0个，才放大头部
                 if (offset>0&&getFirstVisiblePosition()==0){
                     int paddingTop= (int) (-mHeadViewMeasuredHeight+offset);
@@ -214,30 +203,16 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
         }
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-    }
-
     /**
      * 刷新完成后的逻辑
      */
     public void onRefeashComplete(){
-        if (isLoadMore){
-            // TODO: 2016/7/23
-        }else {
-            currentState=PULL_TO_REFEASH;
-            mTitleView.setText("下拉刷新");
-            mHeadView.setPadding(0, -mHeadViewMeasuredHeight, 0, 0);
-            mPB.setVisibility(INVISIBLE);
-            mArrowView.setVisibility(VISIBLE);
-            mLastRefeashTimeView.setText(getTime());
-        }
+        currentState=PULL_TO_REFEASH;
+        mTitleView.setText("下拉刷新");
+        mHeadView.setPadding(0, -mHeadViewMeasuredHeight, 0, 0);
+        mPB.setVisibility(INVISIBLE);
+        mArrowView.setVisibility(VISIBLE);
+        mLastRefeashTimeView.setText(getTime());
     }
 
     /**
@@ -246,7 +221,7 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
      */
     private String getTime() {
         long currentTime=System.currentTimeMillis();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         return "最后刷新时间："+sdf.format(currentTime);
     }
 
@@ -255,12 +230,12 @@ public class RefeashListView extends ListView implements AbsListView.OnScrollLis
      */
     public interface onRefreshListener{
         void onRefeash();
-        void onLoadMore();
+        //void onLoadMore();
     }
 
     /**
      * 设置刷新状态监听器
-     * @param listener
+     * @param listener 监听接口实例
      */
     public void setOnRefeashListener(onRefreshListener listener){
         this.mListener=listener;
