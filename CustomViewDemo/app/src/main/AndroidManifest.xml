@@ -22,6 +22,7 @@
         <activity android:name=".Activity.ToggleActivity"/>
         <activity android:name=".Activity.RefeathActivity"/>
         <activity android:name=".Activity.SlideMenuAvtiviy"/>
+        <activity android:name=".Activity.OvalWeatherActivity"/>
     </application>
 
 </manifest>

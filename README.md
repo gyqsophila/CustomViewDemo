@@ -24,3 +24,8 @@ Some custom view demos,like wheeled menu,carousel images.
 ## SlideMenu
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/SlideMenu.gif)
+
+## OvalWeatherView
+
+![](http://oa3wvfmvl.bkt.clouddn.com/weather1.png)
+![](http://oa3wvfmvl.bkt.clouddn.com/weather2.png)

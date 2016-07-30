@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Button refeashButton;
     @BindView(R.id.slide_button)
     Button slideButton;
+    @BindView(R.id.oval_button)
+    Button ovalButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @OnClick({R.id.wheelDemo, R.id.carousel, R.id.popup_window, R.id.toggle_button,
-            R.id.refeash_button,R.id.slide_button})
+            R.id.refeash_button, R.id.slide_button,R.id.oval_button})
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -57,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.slide_button:
                 intent.setClass(this, SlideMenuAvtiviy.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                break;
+            case R.id.oval_button:
+                intent.setClass(this, OvalWeatherActivity.class);
                 break;
         }
         startActivity(intent);

@@ -45,5 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="侧滑菜单"/>
+    <Button
+        android:id="@+id/oval_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="天气刻度"/>
 
 </LinearLayout>
