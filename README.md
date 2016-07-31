@@ -27,5 +27,5 @@ Some custom view demos,like wheeled menu,carousel images.
 
 ## OvalWeatherView
 
-![](http://oa3wvfmvl.bkt.clouddn.com/weather1.png)
-![](http://oa3wvfmvl.bkt.clouddn.com/weather2.png)
+![](http://oa3wvfmvl.bkt.clouddn.com/weather11.png)
+![](http://oa3wvfmvl.bkt.clouddn.com/weather22.png)
