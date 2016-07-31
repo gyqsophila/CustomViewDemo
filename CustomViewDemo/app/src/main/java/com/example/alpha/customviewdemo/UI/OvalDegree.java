@@ -19,10 +19,7 @@ import com.example.alpha.customviewdemo.Activity.OvalWeatherActivity;
  */
 public class OvalDegree extends View {
 
-    /**
-     * 默认最小宽度和高度
-     */
-    private static final int DEFAULTMINWIDTH = 750;
+    private int defaultMinWidth = 800;
     /**
      * 用于画圆弧的笔
      */
@@ -38,7 +35,7 @@ public class OvalDegree extends View {
     /**
      * 圆环宽度
      */
-    private int CircleWidth = 50;
+    private int CircleWidth = getDefaultMinWidth() / 20;
     /**
      * 圆心横纵坐标
      */
@@ -46,15 +43,15 @@ public class OvalDegree extends View {
     /**
      * 圆环外半径
      */
-    private int mRadius;
+    private float mRadius;
     /**
      * 圆环内半径
      */
-    private int insideRadius;
+    private float insideRadius;
     /**
      * 内边距
      */
-    private int insidePadding=150;
+    private float insidePadding = getDefaultMinWidth() / 7.5f;
     /**
      * 由坐标指定的矩形，用于包裹整个圆环
      */
@@ -63,10 +60,6 @@ public class OvalDegree extends View {
      * 渐变色对象
      */
     private SweepGradient mSweepGradient;
-    /**
-     * 刻度盘刻度线长度
-     */
-    private int top;
     /**
      * 刻度盘文字结束度数
      */
@@ -78,19 +71,20 @@ public class OvalDegree extends View {
     /**
      * 最小温度，刻度盘彩色区域的起点温度
      */
-    private int minTemperature=-20;
+    private int minTemperature = -20;
     /**
      * 最大温度，刻度盘彩色区域的终点温度
      */
-    private int maxTemperature=40;
+    private int maxTemperature = 40;
     /**
      * 当前温度，显示在刻度盘中心
      */
-    private int currentTemperature=0;
+    private int currentTemperature = 0;
     /**
      * 天气状况，显示在刻度盘底部
      */
-    private String weatherType="";
+    private String weatherType = "";
+    private boolean drawScale = false;
 
     public OvalDegree(Context context) {
         super(context);
@@ -125,7 +119,7 @@ public class OvalDegree extends View {
         mTextPaint = new Paint();//画刻度文字
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(Color.BLACK);
-        mTextPaint.setTextSize(40);
+        mTextPaint.setTextSize(getDefaultMinWidth() / 30f);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
@@ -137,6 +131,7 @@ public class OvalDegree extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         initDraw();
+        mArcPaint.setStrokeWidth(getDefaultMinWidth() / 20);
         mArcPaint.setShader(null);//设置着色器为空，没有水平间距
         canvas.drawArc(mAcrRectf  //绘制的区域范围
                 , 135             //开始角度
@@ -144,103 +139,111 @@ public class OvalDegree extends View {
                 , false           //是否与圆心相连
                 , mArcPaint);     //画笔
         mArcPaint.setShader(mSweepGradient);//添加渐变色
-/*        for (int i = 0; i < 360/4.5; i++) {//每隔2度画一条线，总共要画180条线
-            //圆心整顶部直线的Y坐标
-            top = mCenter - mRadius - CircleWidth / 2;
-            //地步空白区域不画线，只旋转
-            if (i <= 30 || i >= 50) {
-                //每五个刻度画一个大刻度
-                if (i % 5 == 0) {
-                    top = top - 25;
+        if (isDrawScale()) {
+            for (int i = 0; i < 360 / 4.5; i++) {//每隔4.5度画一条线，总共要画80条线
+                //圆心整顶部直线的Y坐标
+                /*
+      刻度盘刻度线长度
+     */
+                float top = mCenter - mRadius - CircleWidth / 2;
+                //地步空白区域不画线，只旋转
+                if (i <= 30 || i >= 50) {
+                    //每五个刻度画一个大刻度
+                    if (i % 5 == 0) {
+                        top = top - getDefaultMinWidth() / 100;
+                    }
+                    canvas.drawLine(mCenter,        //起点横坐标
+                            mCenter - mRadius, //起点纵坐标
+                            mCenter,                //终点横坐标
+                            top,                    //终点纵坐标
+                            mLinepaint);            //画笔
                 }
-                canvas.drawLine(mCenter,        //起点横坐标
-                        mCenter - mRadius + 30, //起点纵坐标
-                        mCenter,                //终点横坐标
-                        top,                    //终点纵坐标
-                        mLinepaint);            //画笔
+                canvas.rotate(4.5f, mCenter, mCenter); //旋转角度、旋转中心
             }
-            canvas.rotate(4.5f, mCenter, mCenter); //旋转角度、旋转中心
-        }*/
-        int x = mRadius + CircleWidth / 2 + 50; //文字中心距离圆心的距离
-        int c = mRadius + CircleWidth / 2 + 50; //斜边长度
+        }
+        float x = mRadius + CircleWidth / 2 + getDefaultMinWidth() / 15; //文字中心距离圆心的距离
+        float c = mRadius + CircleWidth / 2 + getDefaultMinWidth() / 15; //斜边长度
         x = (int) Math.sqrt(x * x / 2);              //直角边长度
 
-        canvas.rotate(135,mCenter,mCenter);//为了涂渐变色先转到颜色开始的角度
-        canvas.drawArc(mAcrRectf, temp2degree(minTemperature),subTemp2degree(maxTemperature-minTemperature),false,mArcPaint);
-        canvas.rotate(-135,mCenter,mCenter);//涂色完毕转回来
+        canvas.rotate(135, mCenter, mCenter);//为了涂渐变色先转到颜色开始的角度
+        canvas.drawArc(mAcrRectf, temp2degree(minTemperature), subTemp2degree(maxTemperature - minTemperature), false, mArcPaint);
+        canvas.rotate(-135, mCenter, mCenter);//涂色完毕转回来
 
         /**
          * 七个刻度标记
          */
-        canvas.drawText(startDegree + "", //要绘制的文字
+        canvas.drawText(startDegree + "℃", //要绘制的文字
                 mCenter - x,              //文字起点横坐标
                 mCenter + x,              //文本基线总表做
                 mTextPaint);            //画笔
-        canvas.drawText(startDegree + 10 + "℃", mCenter - c, mCenter+10, mTextPaint);
+        canvas.drawText(startDegree + 10 + "℃", mCenter - c, mCenter + getDefaultMinWidth() / 75, mTextPaint);
         canvas.drawText(startDegree + 20 + "℃", mCenter - x, mCenter - x, mTextPaint);
-        canvas.drawText(startDegree + 30 + "℃", mCenter, mCenter - c +10, mTextPaint);
+        canvas.drawText(startDegree + 30 + "℃", mCenter, mCenter - c + getDefaultMinWidth() / 25, mTextPaint);
         canvas.drawText(startDegree + 40 + "℃", mCenter + x, mCenter - x, mTextPaint);
-        canvas.drawText(startDegree + 50 + "℃", mCenter + c, mCenter, mTextPaint);
+        canvas.drawText(startDegree + 50 + "℃", mCenter + c, mCenter + getDefaultMinWidth() / 75, mTextPaint);
         canvas.drawText(startDegree + 60 + "℃", mCenter + x, mCenter + x, mTextPaint);
 
-        mTextPaint.setTextSize(120);
-        canvas.drawText(getCurrentTemperature() +"℃", mCenter, mCenter+20, mTextPaint);
-        mTextPaint.setTextSize(60);
-        canvas.drawText(getWeatherType(), mCenter, mCenter+c, mTextPaint);
-        mTextPaint.setTextSize(40);//需要将画笔文字大小设为初始值
+        mTextPaint.setTextSize(getDefaultMinWidth() / 6.25f);
+        canvas.drawText(getCurrentTemperature() + "℃", mCenter, mCenter + getDefaultMinWidth() / 20, mTextPaint);
+        mTextPaint.setTextSize(getDefaultMinWidth() / 15f);
+        canvas.drawText(getWeatherType(), mCenter, mCenter + c, mTextPaint);
+        mTextPaint.setTextSize(getDefaultMinWidth() / 30f);//需要将画笔文字大小设为初始值
     }
 
     private void initDraw() {
-        mCenter = DEFAULTMINWIDTH / 2;
-        mRadius = DEFAULTMINWIDTH / 2 -  insidePadding;
+        mCenter = getDefaultMinWidth() / 2;
+        mRadius = getDefaultMinWidth() / 2 - insidePadding;
         insideRadius = mRadius - CircleWidth / 2;//内半径=半径-圆环宽度的一半
         //坐标指定的矩形，
         mAcrRectf = new RectF(mCenter - mRadius, mCenter - mRadius, mCenter + mRadius, mCenter + mRadius);
         int[] colors = {Color.BLUE, Color.GREEN, Color.RED};
-        float[] positions = {0, 3f/8, 6f/8};
+        float[] positions = {0, 3f / 8, 6f / 8};
         mSweepGradient = new SweepGradient(mCenter, mCenter, colors, positions);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measureDistence(widthMeasureSpec), measureDistence(heightMeasureSpec));
+        setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
+        CircleWidth = getDefaultMinWidth() / 20;
     }
 
-    private int measureDistence(int measureSpec) {
-        int result=DEFAULTMINWIDTH;
+    private int measureWidth(int measureSpec) {
+        int result = getDefaultMinWidth();
         int mode = MeasureSpec.getMode(measureSpec);
         int size = MeasureSpec.getSize(measureSpec);
-        /*switch (mode) {
-            case MeasureSpec.AT_MOST://最大值模式，wrap_content
-                size = Math.min(defaultValue, size);
-                break;
-            case MeasureSpec.EXACTLY://精确模式，100dp、match_parent
-                break;
-            case MeasureSpec.UNSPECIFIED://未指定约束条件
-                break;
-            default:
-                size = defaultValue;
-                break;
-        }*/
-        if (mode== MeasureSpec.EXACTLY){
-            result=size;
-        }else if (mode==MeasureSpec.AT_MOST){
-            result=Math.min(result,size);
+        if (mode == MeasureSpec.EXACTLY) {//精确值模式
+            result = size;
+        } else if (mode == MeasureSpec.AT_MOST) {//模糊模式
+            result = Math.min(result, size);
         }
+        setDefaultMinWidth(result);
         return result;
+    }
+
+    private int measureHeight(int heightMeasureSpec) {
+        int result = getDefaultMinWidth();
+        int mode = MeasureSpec.getMode(heightMeasureSpec);
+        int size = MeasureSpec.getSize(heightMeasureSpec);
+        if (mode == MeasureSpec.EXACTLY) {
+            result = size;
+        } else if (mode == MeasureSpec.AT_MOST) {
+            result = Math.min(result, size);
+        }
+        return Math.min(result, getDefaultMinWidth());
     }
 
     /**
      * 根据温度得到圆环中的角度位置
+     *
      * @param temperature 温度
      * @return 在圆环中的角度
      */
-    private float temp2degree(int temperature){
+    private float temp2degree(int temperature) {
         Log.d(OvalWeatherActivity.TAG, "startDegree:" + temperature);
         return (float) (((temperature - (-20)) * 4.5));
     }
 
-    private float subTemp2degree(int temperatureDifference){
+    private float subTemp2degree(int temperatureDifference) {
         return (float) (temperatureDifference * 4.5);
     }
 
@@ -249,17 +252,17 @@ public class OvalDegree extends View {
     }
 
     public void setMinTemperature(int minTemperature) {
-        if (minTemperature>=startDegree&&minTemperature<=maxTemperature){
+        if (minTemperature >= startDegree && minTemperature <= maxTemperature) {
             this.minTemperature = minTemperature;
             invalidate();
-        }else {
+        } else {
             setRangeError();
         }
     }
 
     private void setRangeError() {
         Toast.makeText(getContext()
-                ,"The temp must in range of start degree to end degree.",Toast.LENGTH_SHORT).show();
+                , "The temp must in range of start degree to end degree.", Toast.LENGTH_SHORT).show();
     }
 
     public int getMaxTemperature() {
@@ -267,10 +270,10 @@ public class OvalDegree extends View {
     }
 
     public void setMaxTemperature(int maxTemperature) {
-        if (maxTemperature<=endDegree&&maxTemperature>=minTemperature){
+        if (maxTemperature <= endDegree && maxTemperature >= minTemperature) {
             this.maxTemperature = maxTemperature;
             invalidate();
-        }else {
+        } else {
             setRangeError();
         }
     }
@@ -280,9 +283,9 @@ public class OvalDegree extends View {
     }
 
     public void setCurrentTemperature(int currentTemperature) {
-        if (currentTemperature>=minTemperature&&currentTemperature<=maxTemperature){
+        if (currentTemperature >= minTemperature && currentTemperature <= maxTemperature) {
             this.currentTemperature = currentTemperature;
-        }else {
+        } else {
             setError();
         }
     }
@@ -295,8 +298,31 @@ public class OvalDegree extends View {
         this.weatherType = weatherType;
     }
 
-    private void setError(){
-        Toast.makeText(getContext(),"Valus must within this range of "
-                +minTemperature+" to "+maxTemperature+"",Toast.LENGTH_SHORT).show();
+    private void setError() {
+        Toast.makeText(getContext(), "Valus must within this range of "
+                + minTemperature + " to " + maxTemperature + "", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 是否画刻度线
+     */
+    public boolean isDrawScale() {
+        return drawScale;
+    }
+
+    public void setDrawScale(boolean drawScale) {
+        this.drawScale = drawScale;
+        invalidate();
+    }
+
+    /**
+     * 默认最小宽度和高度
+     */
+    public int getDefaultMinWidth() {
+        return defaultMinWidth;
+    }
+
+    public void setDefaultMinWidth(int defaultMinWidth) {
+        this.defaultMinWidth = defaultMinWidth;
     }
 }

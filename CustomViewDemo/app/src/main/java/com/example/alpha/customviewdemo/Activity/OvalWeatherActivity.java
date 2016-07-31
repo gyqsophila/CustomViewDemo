@@ -47,5 +47,6 @@ public class OvalWeatherActivity extends AppCompatActivity {
         weatherView.setMaxTemperature(Integer.parseInt(maxTemp.getText().toString()));
         weatherView.setCurrentTemperature(Integer.valueOf(currentTemp.getText().toString()));
         weatherView.setWeatherType(weatherType.getText().toString());
+        weatherView.setDrawScale(false);
     }
 }
