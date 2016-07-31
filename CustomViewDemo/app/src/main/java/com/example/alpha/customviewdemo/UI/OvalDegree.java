@@ -7,11 +7,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import com.example.alpha.customviewdemo.Activity.OvalWeatherActivity;
 
 /**
  * 自定义的天气温度显示View
@@ -84,6 +81,9 @@ public class OvalDegree extends View {
      * 天气状况，显示在刻度盘底部
      */
     private String weatherType = "";
+    /**
+     * 是否画刻度线
+     */
     private boolean drawScale = false;
 
     public OvalDegree(Context context) {
@@ -142,9 +142,7 @@ public class OvalDegree extends View {
         if (isDrawScale()) {
             for (int i = 0; i < 360 / 4.5; i++) {//每隔4.5度画一条线，总共要画80条线
                 //圆心整顶部直线的Y坐标
-                /*
-      刻度盘刻度线长度
-     */
+                //刻度盘刻度线长度
                 float top = mCenter - mRadius - CircleWidth / 2;
                 //地步空白区域不画线，只旋转
                 if (i <= 30 || i >= 50) {
@@ -190,6 +188,9 @@ public class OvalDegree extends View {
         mTextPaint.setTextSize(getDefaultMinWidth() / 30f);//需要将画笔文字大小设为初始值
     }
 
+    /**
+     * 初始化绘制数据
+     */
     private void initDraw() {
         mCenter = getDefaultMinWidth() / 2;
         mRadius = getDefaultMinWidth() / 2 - insidePadding;
@@ -207,6 +208,12 @@ public class OvalDegree extends View {
         CircleWidth = getDefaultMinWidth() / 20;
     }
 
+    /**
+     * 测量实际宽度
+     *
+     * @param measureSpec 待确认宽度
+     * @return 实际宽度
+     */
     private int measureWidth(int measureSpec) {
         int result = getDefaultMinWidth();
         int mode = MeasureSpec.getMode(measureSpec);
@@ -239,10 +246,15 @@ public class OvalDegree extends View {
      * @return 在圆环中的角度
      */
     private float temp2degree(int temperature) {
-        Log.d(OvalWeatherActivity.TAG, "startDegree:" + temperature);
         return (float) (((temperature - (-20)) * 4.5));
     }
 
+    /**
+     * 根据温度差计算需要旋转的角度
+     *
+     * @param temperatureDifference 温度差
+     * @return 旋转角度
+     */
     private float subTemp2degree(int temperatureDifference) {
         return (float) (temperatureDifference * 4.5);
     }
@@ -260,6 +272,9 @@ public class OvalDegree extends View {
         }
     }
 
+    /**
+     * 设置温度范围出错时调用
+     */
     private void setRangeError() {
         Toast.makeText(getContext()
                 , "The temp must in range of start degree to end degree.", Toast.LENGTH_SHORT).show();
@@ -269,6 +284,11 @@ public class OvalDegree extends View {
         return maxTemperature;
     }
 
+    /**
+     * 设置当天最高温度
+     *
+     * @param maxTemperature 最高温度
+     */
     public void setMaxTemperature(int maxTemperature) {
         if (maxTemperature <= endDegree && maxTemperature >= minTemperature) {
             this.maxTemperature = maxTemperature;
@@ -282,6 +302,11 @@ public class OvalDegree extends View {
         return currentTemperature;
     }
 
+    /**
+     * 设置当前温度
+     *
+     * @param currentTemperature 当前温度
+     */
     public void setCurrentTemperature(int currentTemperature) {
         if (currentTemperature >= minTemperature && currentTemperature <= maxTemperature) {
             this.currentTemperature = currentTemperature;
@@ -294,10 +319,18 @@ public class OvalDegree extends View {
         return weatherType;
     }
 
+    /**
+     * 设置天气状况
+     *
+     * @param weatherType 天气状况信息
+     */
     public void setWeatherType(String weatherType) {
         this.weatherType = weatherType;
     }
 
+    /**
+     * 当设置信息出错的时候调用
+     */
     private void setError() {
         Toast.makeText(getContext(), "Valus must within this range of "
                 + minTemperature + " to " + maxTemperature + "", Toast.LENGTH_SHORT).show();
@@ -310,6 +343,11 @@ public class OvalDegree extends View {
         return drawScale;
     }
 
+    /**
+     * 是否画刻度线
+     *
+     * @param drawScale true or fals
+     */
     public void setDrawScale(boolean drawScale) {
         this.drawScale = drawScale;
         invalidate();
@@ -322,6 +360,11 @@ public class OvalDegree extends View {
         return defaultMinWidth;
     }
 
+    /**
+     * 设置view高度和宽度
+     *
+     * @param defaultMinWidth 高度和宽度
+     */
     public void setDefaultMinWidth(int defaultMinWidth) {
         this.defaultMinWidth = defaultMinWidth;
     }
