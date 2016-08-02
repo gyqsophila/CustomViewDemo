@@ -29,3 +29,7 @@ Some custom view demos,like wheeled menu,carousel images.
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/weather111.png)
 ![](http://oa3wvfmvl.bkt.clouddn.com/weather222.png)
+
+## ViewPagerIndicator
+
+![](http://oa3wvfmvl.bkt.clouddn.com/viewpagerindicator.gif)

@@ -23,6 +23,7 @@
         <activity android:name=".Activity.RefeathActivity"/>
         <activity android:name=".Activity.SlideMenuAvtiviy"/>
         <activity android:name=".Activity.OvalWeatherActivity"/>
+        <activity android:name=".Activity.ViewPagerActivity"/>
     </application>
 
 </manifest>
