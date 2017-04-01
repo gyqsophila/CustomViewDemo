@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     Button ovalButton;
     @BindView(R.id.viewpager_button)
     Button viewpagerButton;
+    @BindView(R.id.circle_button)
+    Button clrcleButton;
+    @BindView(R.id.recycle_button)
+    Button recycleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     @OnClick({R.id.wheelDemo, R.id.carousel, R.id.popup_window, R.id.toggle_button,
-            R.id.refeash_button, R.id.slide_button, R.id.oval_button,R.id.viewpager_button})
+            R.id.refeash_button, R.id.slide_button, R.id.oval_button, R.id.viewpager_button,
+            R.id.circle_button,R.id.recycle_button})
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -67,9 +72,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.viewpager_button:
                 intent.setClass(this, ViewPagerActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                break;
+            case R.id.circle_button:
+                intent.setClass(this, CircleViewActivity.class);
+                break;
+            case R.id.recycle_button:
+                intent.setClass(this, RecyclerViewActivity.class);
                 break;
         }
         startActivity(intent);
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.alpha.customviewdemo.UI;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,13 +11,27 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.alpha.customviewdemo.R;
+
 /**
  * 自定义的天气温度显示View
  * Created by Alpha on 2016/7/29.
  */
 public class OvalDegree extends View {
 
-    private int defaultMinWidth = 800;
+    /**
+     * 刻度盘文字颜色
+     */
+    private int text_color = getResources().getColor(R.color.colorPrimaryDark);
+    /**
+     * 刻度盘圆环背景色
+     */
+    private int ring_color = getResources().getColor(R.color.colorPrimary);
+    /**
+     * 中间天气状况及下方描述颜色
+     */
+    private int weather_color = getResources().getColor(R.color.colorAccent);
+
     /**
      * 用于画圆弧的笔
      */
@@ -32,23 +47,19 @@ public class OvalDegree extends View {
     /**
      * 圆环宽度
      */
-    private int CircleWidth = getDefaultMinWidth() / 20;
+    private int ringWidth = getWidth() / 40;
     /**
-     * 圆心横纵坐标
+     * 圆心横坐标
      */
-    private int mCenter;
+    private int mCenterX;
+    /**
+     * 圆心纵坐标
+     */
+    private int mCenterY;
     /**
      * 圆环外半径
      */
     private float mRadius;
-    /**
-     * 圆环内半径
-     */
-    private float insideRadius;
-    /**
-     * 内边距
-     */
-    private float insidePadding = getDefaultMinWidth() / 7.5f;
     /**
      * 由坐标指定的矩形，用于包裹整个圆环
      */
@@ -84,7 +95,8 @@ public class OvalDegree extends View {
     /**
      * 是否画刻度线
      */
-    private boolean drawScale = false;
+    private boolean drawScale = true;
+
 
     public OvalDegree(Context context) {
         super(context);
@@ -92,35 +104,64 @@ public class OvalDegree extends View {
     }
 
     public OvalDegree(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public OvalDegree(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.OvalDegree);
+        text_color = array.getColor(R.styleable.OvalDegree_weather_text_color,
+                getResources().getColor(R.color.colorPrimary));
+        ring_color = array.getColor(R.styleable.OvalDegree_ring_background,
+                getResources().getColor(R.color.colorPrimary));
+        weather_color = array.getColor(R.styleable.OvalDegree_weather_text_color,
+                getResources().getColor(R.color.colorAccent));
+        array.recycle();
         init();
     }
+
 
     /**
      * 初始化需要用到的三支画笔
      */
     private void init() {
         mArcPaint = new Paint();//画背景圆环
-        mArcPaint.setStrokeWidth(CircleWidth);//圆环宽度
+        mArcPaint.setStrokeWidth(ringWidth);//圆环宽度
         mArcPaint.setAntiAlias(true);//锯齿消除
-        mArcPaint.setColor(Color.WHITE);//背景色
+        mArcPaint.setColor(ring_color);//背景色
         mArcPaint.setStyle(Paint.Style.STROKE);//竖线样式
 
         mLinepaint = new Paint();//画刻度线
         mLinepaint.setAntiAlias(true);
-        mLinepaint.setColor(Color.BLUE);
+        mLinepaint.setColor(text_color);
         mLinepaint.setStrokeWidth(1);
 
         mTextPaint = new Paint();//画刻度文字
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setColor(Color.BLACK);
-        mTextPaint.setTextSize(getDefaultMinWidth() / 30f);
+        mTextPaint.setColor(weather_color);
+        mTextPaint.setTextSize(getWidth() / 20f);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+        //避免在 scrollView 里获取不到高度
+        if (heightMeasureSpec == 0) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(300, MeasureSpec.AT_MOST);
+        }
+        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(300, 300);
+        } else if (widthSpecMode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(300, heightSpecSize);
+        } else if (heightSpecMode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(widthSpecSize, widthSpecSize);
+        }
     }
 
     /**
@@ -130,8 +171,24 @@ public class OvalDegree extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        initDraw();
-        mArcPaint.setStrokeWidth(getDefaultMinWidth() / 20);
+        int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+        int width = getWidth() - paddingLeft - paddingRight;
+        int height = getHeight() - paddingTop - paddingBottom;
+
+        mCenterX = paddingLeft + width / 2;
+        mCenterY = paddingTop + height / 2;
+        mRadius = Math.min(width, height) / 2 - Math.min(width, height) / 5;
+        //坐标指定的矩形，
+        mAcrRectf = new RectF(mCenterX - mRadius, mCenterY - mRadius,
+                mCenterX + mRadius, mCenterY + mRadius);
+        int[] colors = {Color.BLUE, Color.GREEN, Color.RED};
+        float[] positions = {0, 3f / 8, 6f / 8};
+        mSweepGradient = new SweepGradient(mCenterX, mCenterY, colors, positions);
+
+        mArcPaint.setStrokeWidth(getWidth() / 20);
         mArcPaint.setShader(null);//设置着色器为空，没有水平间距
         canvas.drawArc(mAcrRectf  //绘制的区域范围
                 , 135             //开始角度
@@ -143,100 +200,54 @@ public class OvalDegree extends View {
             for (int i = 0; i < 360 / 4.5; i++) {//每隔4.5度画一条线，总共要画80条线
                 //圆心整顶部直线的Y坐标
                 //刻度盘刻度线长度
-                float top = mCenter - mRadius - CircleWidth / 2;
+                float top = mCenterY - mRadius - ringWidth / 2;
                 //地步空白区域不画线，只旋转
                 if (i <= 30 || i >= 50) {
                     //每五个刻度画一个大刻度
                     if (i % 5 == 0) {
-                        top = top - getDefaultMinWidth() / 100;
+                        top = top - getWidth() / 100;
                     }
-                    canvas.drawLine(mCenter,        //起点横坐标
-                            mCenter - mRadius, //起点纵坐标
-                            mCenter,                //终点横坐标
+                    canvas.drawLine(mCenterX,        //起点横坐标
+                            mCenterY - mRadius, //起点纵坐标
+                            mCenterX,                //终点横坐标
                             top,                    //终点纵坐标
                             mLinepaint);            //画笔
                 }
-                canvas.rotate(4.5f, mCenter, mCenter); //旋转角度、旋转中心
+                canvas.rotate(4.5f, mCenterX, mCenterY); //旋转角度、旋转中心
             }
         }
-        float x = mRadius + CircleWidth / 2 + getDefaultMinWidth() / 15; //文字中心距离圆心的距离
-        float c = mRadius + CircleWidth / 2 + getDefaultMinWidth() / 15; //斜边长度
+        float x = mRadius + ringWidth / 2 + getWidth() / 15; //文字中心距离圆心的距离
+        float c = mRadius + ringWidth / 2 + getWidth() / 15; //斜边长度
         x = (int) Math.sqrt(x * x / 2);              //直角边长度
 
-        canvas.rotate(135, mCenter, mCenter);//为了涂渐变色先转到颜色开始的角度
-        canvas.drawArc(mAcrRectf, temp2degree(minTemperature), subTemp2degree(maxTemperature - minTemperature), false, mArcPaint);
-        canvas.rotate(-135, mCenter, mCenter);//涂色完毕转回来
+        canvas.rotate(135, mCenterX, mCenterY);//为了涂渐变色先转到颜色开始的角度
+        canvas.drawArc(mAcrRectf, temp2degree(minTemperature),
+                subTemp2degree(maxTemperature - minTemperature), false, mArcPaint);
+        canvas.rotate(-135, mCenterX, mCenterY);//涂色完毕转回来
 
         /**
          * 七个刻度标记
          */
         canvas.drawText(startDegree + "℃", //要绘制的文字
-                mCenter - x,              //文字起点横坐标
-                mCenter + x,              //文本基线总表做
+                mCenterX - x,              //文字起点横坐标
+                mCenterY + x,              //文本基线纵坐标
                 mTextPaint);            //画笔
-        canvas.drawText(startDegree + 10 + "℃", mCenter - c, mCenter + getDefaultMinWidth() / 75, mTextPaint);
-        canvas.drawText(startDegree + 20 + "℃", mCenter - x, mCenter - x, mTextPaint);
-        canvas.drawText(startDegree + 30 + "℃", mCenter, mCenter - c + getDefaultMinWidth() / 25, mTextPaint);
-        canvas.drawText(startDegree + 40 + "℃", mCenter + x, mCenter - x, mTextPaint);
-        canvas.drawText(startDegree + 50 + "℃", mCenter + c, mCenter + getDefaultMinWidth() / 75, mTextPaint);
-        canvas.drawText(startDegree + 60 + "℃", mCenter + x, mCenter + x, mTextPaint);
+        canvas.drawText(startDegree + 10 + "℃", mCenterX - c, mCenterY + getWidth() / 75,
+                mTextPaint);
+        canvas.drawText(startDegree + 20 + "℃", mCenterX - x, mCenterY - x, mTextPaint);
+        canvas.drawText(startDegree + 30 + "℃", mCenterX, mCenterY - c + getWidth() / 40,
+                mTextPaint);
+        canvas.drawText(startDegree + 40 + "℃", mCenterX + x, mCenterY - x, mTextPaint);
+        canvas.drawText(startDegree + 50 + "℃", mCenterX + c, mCenterY + getWidth() / 75,
+                mTextPaint);
+        canvas.drawText(startDegree + 60 + "℃", mCenterX + x, mCenterY + x, mTextPaint);
 
-        mTextPaint.setTextSize(getDefaultMinWidth() / 6.25f);
-        canvas.drawText(getCurrentTemperature() + "℃", mCenter, mCenter + getDefaultMinWidth() / 20, mTextPaint);
-        mTextPaint.setTextSize(getDefaultMinWidth() / 15f);
-        canvas.drawText(getWeatherType(), mCenter, mCenter + c, mTextPaint);
-        mTextPaint.setTextSize(getDefaultMinWidth() / 30f);//需要将画笔文字大小设为初始值
-    }
-
-    /**
-     * 初始化绘制数据
-     */
-    private void initDraw() {
-        mCenter = getDefaultMinWidth() / 2;
-        mRadius = getDefaultMinWidth() / 2 - insidePadding;
-        insideRadius = mRadius - CircleWidth / 2;//内半径=半径-圆环宽度的一半
-        //坐标指定的矩形，
-        mAcrRectf = new RectF(mCenter - mRadius, mCenter - mRadius, mCenter + mRadius, mCenter + mRadius);
-        int[] colors = {Color.BLUE, Color.GREEN, Color.RED};
-        float[] positions = {0, 3f / 8, 6f / 8};
-        mSweepGradient = new SweepGradient(mCenter, mCenter, colors, positions);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
-        CircleWidth = getDefaultMinWidth() / 20;
-    }
-
-    /**
-     * 测量实际宽度
-     *
-     * @param measureSpec 待确认宽度
-     * @return 实际宽度
-     */
-    private int measureWidth(int measureSpec) {
-        int result = getDefaultMinWidth();
-        int mode = MeasureSpec.getMode(measureSpec);
-        int size = MeasureSpec.getSize(measureSpec);
-        if (mode == MeasureSpec.EXACTLY) {//精确值模式
-            result = size;
-        } else if (mode == MeasureSpec.AT_MOST) {//模糊模式
-            result = Math.min(result, size);
-        }
-        setDefaultMinWidth(result);
-        return result;
-    }
-
-    private int measureHeight(int heightMeasureSpec) {
-        int result = getDefaultMinWidth();
-        int mode = MeasureSpec.getMode(heightMeasureSpec);
-        int size = MeasureSpec.getSize(heightMeasureSpec);
-        if (mode == MeasureSpec.EXACTLY) {
-            result = size;
-        } else if (mode == MeasureSpec.AT_MOST) {
-            result = Math.min(result, size);
-        }
-        return Math.min(result, getDefaultMinWidth());
+        mTextPaint.setTextSize(getWidth() / 6.25f);
+        canvas.drawText(getCurrentTemperature() + "℃", mCenterX,
+                mCenterY + getWidth() / 20, mTextPaint);
+        mTextPaint.setTextSize(getWidth() / 15f);
+        canvas.drawText(getWeatherType(), mCenterX, mCenterY + c, mTextPaint);
+        mTextPaint.setTextSize(getWidth() / 30f);//需要将画笔文字大小设为初始值
     }
 
     /**
@@ -277,7 +288,8 @@ public class OvalDegree extends View {
      */
     private void setRangeError() {
         Toast.makeText(getContext()
-                , "The temp must in range of start degree to end degree.", Toast.LENGTH_SHORT).show();
+                , "The temp must in range of start degree to end degree.",
+                Toast.LENGTH_SHORT).show();
     }
 
     public int getMaxTemperature() {
@@ -351,21 +363,5 @@ public class OvalDegree extends View {
     public void setDrawScale(boolean drawScale) {
         this.drawScale = drawScale;
         invalidate();
-    }
-
-    /**
-     * 默认最小宽度和高度
-     */
-    public int getDefaultMinWidth() {
-        return defaultMinWidth;
-    }
-
-    /**
-     * 设置view高度和宽度
-     *
-     * @param defaultMinWidth 高度和宽度
-     */
-    public void setDefaultMinWidth(int defaultMinWidth) {
-        this.defaultMinWidth = defaultMinWidth;
     }
 }

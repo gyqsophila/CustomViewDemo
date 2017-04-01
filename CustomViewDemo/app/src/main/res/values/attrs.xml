@@ -8,4 +8,11 @@
     <declare-styleable name="ViewPagerIndicator">
         <attr name="visible_tab_count" format="integer" />
     </declare-styleable>
+    <declare-styleable name="OvalDegree">
+        <attr name="ring_background" format="color|reference"/>
+        <attr name="weather_text_color" format="color|reference"/>
+    </declare-styleable>
+    <declare-styleable name="CircleView">
+        <attr name="circle_color" format="color"/>
+    </declare-styleable>
 </resources>

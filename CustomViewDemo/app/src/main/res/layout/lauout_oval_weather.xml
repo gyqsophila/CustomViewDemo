@@ -13,10 +13,11 @@
 
         <com.example.alpha.customviewdemo.UI.OvalDegree
             android:id="@+id/weather_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@android:color/darker_gray" />
+            android:paddingStart="40dp"
+            android:layout_margin="10dp"
+            android:background="@color/bg_pressed"/>
 
         <EditText
             android:id="@+id/currentTemp"

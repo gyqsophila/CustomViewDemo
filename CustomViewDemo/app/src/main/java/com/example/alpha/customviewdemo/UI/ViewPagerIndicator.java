@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,6 +99,7 @@ public class ViewPagerIndicator extends LinearLayout {
         if (mVisibleTabCount <= 0) {
             mVisibleTabCount = DEFAULT_TAB_COUNT;
         }
+        Log.d("ViewPagerIndicator", mVisibleTabCount + "");
         arr.recycle();
 
         initDraw();
@@ -106,7 +108,7 @@ public class ViewPagerIndicator extends LinearLayout {
     private void initDraw() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);//抗锯齿
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(Color.WHITE);//需要与联动的ViewPager的背景色相同
         mPaint.setStyle(Paint.Style.FILL);//填充样式
         mPaint.setPathEffect(new CornerPathEffect(3));//圆角效果
     }
@@ -168,6 +170,7 @@ public class ViewPagerIndicator extends LinearLayout {
 
     /**
      * 解析xml文件后会执行的方法
+     * 通过加载xml文件解析布局文件生成view
      */
     @Override
     protected void onFinishInflate() {
@@ -261,7 +264,9 @@ public class ViewPagerIndicator extends LinearLayout {
      * @param count 数量
      */
     public void setVisibleTabCount(int count) {
-        this.mVisibleTabCount = count;
+        if (count > 0) {
+            this.mVisibleTabCount = count;
+        }
     }
 
     /**
@@ -354,7 +359,7 @@ public class ViewPagerIndicator extends LinearLayout {
         if (unselectedColor != null) {
             this.unSelectedColor = unselectedColor;
         }
-        invalidate();
+        //invalidate();
     }
 
     private void setTabClickEvent() {

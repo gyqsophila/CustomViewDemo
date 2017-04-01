@@ -50,3 +50,15 @@ Some custom view demos,like wheeled menu,carousel images.
 配合ViewPager使用的指示器，可以设置tab数量，tab高亮颜色，可以设置viewpager实现联动，可以直接通过list<String>自动创建tab的标题，不需要编辑布局文件。
 
 ![](http://oa3wvfmvl.bkt.clouddn.com/viewpagerindicator.gif)
+
+## 自定义圆
+- 支持 wrap_content、padding、ScrollView 的自定义 View
+
+## 带有头尾布局的 RecyclerView
+- 自定义添加 headerView 和 footerView
+- 兼容 LinearLayout、GridLayout、StaggerLayout 三种布局
+
+![](http://oluujmx7v.bkt.clouddn.com/20170401124832.png)
+![](http://oluujmx7v.bkt.clouddn.com/20170401124805.png)
+![](http://oluujmx7v.bkt.clouddn.com/20170401124901.png)
+![](http://oluujmx7v.bkt.clouddn.com/20170401124922.png)

@@ -26,7 +26,7 @@ public class RefeathActivity extends AppCompatActivity {
     @BindView(R.id.refeash_list_view)
     RefeashListView refeashListView;
 
-    private List<String> Datalist;
+    private List<String> datalist;
     private myAdapter adapter;
 
     @Override
@@ -46,7 +46,7 @@ public class RefeathActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        Datalist.add(0,"我是下拉刷新出来的数据");
+                        datalist.add(0,"我是下拉刷新出来的数据");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -59,24 +59,25 @@ public class RefeathActivity extends AppCompatActivity {
             }
 
         });
-        Datalist=new ArrayList<>();
+        datalist =new ArrayList<>();
         for (int i=0;i<30;i++){
-            Datalist.add("这是一条原始的listview数据："+i);
+            datalist.add("这是一条原始的listview数据："+i);
         }
 
         adapter = new myAdapter();
         refeashListView.setAdapter(adapter);
+
     }
 
     private class myAdapter extends BaseAdapter{
         @Override
         public int getCount() {
-            return Datalist.size();
+            return datalist.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return Datalist.get(position);
+            return datalist.get(position);
         }
 
         @Override
@@ -87,7 +88,7 @@ public class RefeathActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             TextView textView = new TextView(parent.getContext());
-            textView.setText(Datalist.get(position));
+            textView.setText(datalist.get(position));
             textView.setTextSize(18f);
             textView.setPadding(10,10,10,10);
             return textView;

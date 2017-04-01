@@ -41,7 +41,7 @@ public class ViewPagerActivity extends FragmentActivity {
         ButterKnife.bind(this);
         initData();
         viewIndicator.setTabColor("#ffffff","#77ffffff");
-        viewIndicator.setVisibleTabCount(4);
+        viewIndicator.setVisibleTabCount(0);
         viewIndicator.setTabItemTitles(mTitles);
         viewPager.setAdapter(mAdapter);
         viewIndicator.setViewPager(viewPager,0);
